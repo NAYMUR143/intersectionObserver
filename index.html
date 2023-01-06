@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Intersection Observer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .boxcontainer {
+        background: lightcoral;
+        width: 100%;
+        height: 100%;
+        place-content: center;
+        display: grid;
+      }
+      .boxwrap {
+        width: 300px;
+        height: 100px;
+        background-color: lightgreen;
+        transform: translateX(-100%);
+        transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+        margin: 10px;
+        opacity: 0;
+        display: grid;
+        place-content: center;
+      }
+      .boxwrap:nth-child(even) {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      .boxwrap p {
+        font-family: poppins;
+        font-size: 1.5em;
+        font-weight: 600;
+      }
+      .boxwrap.animate {
+        transform: translateX(0%);
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="boxcontainer">
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+      <div class="boxwrap">
+        <p>Scroll</p>
+      </div>
+    </div>
+    <script>
+      const qs_all = (sl) => document.querySelectorAll(sl);
+      const qs_ = (sl) => document.querySelector(sl);
+      const card = qs_all(".boxwrap");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            entry.target.classList.toggle("animate", entry.isIntersecting);
+            // if (entry.isIntersecting) {
+            //   entry.target.classList.add("animate");
+            // }
+            // // else {
+            // //   entry.target.classList.remove("animate");
+            // // }
+            // if (entry.isIntersecting) observer.unobserve(entry.target);
+          });
+        },
+        {
+          // rootMargin: "-100px",
+          threshold: 1,
+        }
+      );
+
+      // lastcardobserver
+      const lastCardObserver = new IntersectionObserver(
+        (entries) => {
+          const lastCard = entries[0];
+          if (!lastCard.isIntersecting) return loadNewCards();
+          lastCardObserver.unobserve(lastCard.target);
+          lastCardObserver.observe(qs_(".boxwrap:last-child"));
+        },
+        {
+          rootMargin: "100px",
+        }
+      );
+
+      lastCardObserver.observe(qs_(".boxwrap:last-child"));
+      card.forEach((card) => {
+        observer.observe(card);
+      });
+      const cardContainer = qs_(".boxcontainer");
+      function loadNewCards() {
+        for (let i = 0; i < 10; i++) {
+          const card = document.createElement("div");
+          const p = document.createElement("p");
+          card.appendChild(p);
+          p.textContent = "New Card";
+          card.classList.add("boxwrap");
+          observer.observe(card);
+          cardContainer.append(card);
+        }
+      }
+    </script>
+  </body>
+</html>
